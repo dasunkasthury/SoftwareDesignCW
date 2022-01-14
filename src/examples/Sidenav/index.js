@@ -41,17 +41,20 @@ import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
 import SidenavRoot from "examples/Sidenav/SidenavRoot";
 import sidenavLogoLabel from "examples/Sidenav/styles/sidenav";
 
+import Server from "api/ServerApi";
+
 // Material Dashboard 2 PRO React context
 import {
   useMaterialUIController,
   setMiniSidenav,
   setTransparentSidenav,
   setWhiteSidenav,
+  setWeatherData,
 } from "context";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
-  const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
+  const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor, weatherData } = controller;
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
 
@@ -67,8 +70,6 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 
   
   useEffect(async () => {
-    const response = await fetch('weatherforecast');
-    console.log("response", response);
     // A function that sets the mini state of the sidenav.
     function handleMiniSidenav() {
       setMiniSidenav(dispatch, window.innerWidth < 1200);
@@ -83,6 +84,8 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 
     // Call the handleMiniSidenav function to set the state with the initial value.
     handleMiniSidenav();
+    const data = await Server.getWeather();
+    setWeatherData(dispatch, data);
 
     // Remove event listener on cleanup
     return () => window.removeEventListener("resize", handleMiniSidenav);
@@ -147,6 +150,9 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 
   const handletst = async () => {
     console.log("-------------------- test ----------------")
+    const data = await Server.getWeather();
+    setWeatherData(dispatch, data);
+    console.log("-------------------- lockerTypeList ----------------", data)
   };
 
   return (
