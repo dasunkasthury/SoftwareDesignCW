@@ -62,8 +62,29 @@ function reducer(state, action) {
     case "DARKMODE": {
       return { ...state, darkMode: action.value };
     }
-    case "WEATHERDATA": {
-      return { ...state, weatherData: action.value };
+    case "ALLTRANSACTIONS": {
+      return { ...state, allTranctions: action.value };
+    }
+    case "OPEN_ADDER": {
+      return { ...state, openAdder: action.value };
+    }
+    case "TRANSACTION_NAME": {
+      return { ...state, transactionName: action.value };
+    }
+    case "TOTALINCOME": {
+      return { ...state, totalIncome: action.value };
+    }
+    case "TOTALEXPENSE": {
+      return { ...state, totalExpense: action.value };
+    }
+    case "SELECTEDCATNAME": {
+      return { ...state, selectedCatName: action.value };
+    }
+    case "SELECTEDCATID": {
+      return { ...state, selectedCatId: action.value };
+    }
+    case "EDITCATPOPOPEN": {
+      return { ...state, editCatPopOpen: action.value };
     }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
@@ -84,7 +105,11 @@ function MaterialUIControllerProvider({ children }) {
     direction: "ltr",
     layout: "dashboard",
     darkMode: false,
-    weatherData: [1, 2, 3, 4, 5],
+    allTranctions: [1, 2, 3, 4, 5],
+    transactionName: "",
+    totalExpense: 0,
+    totalIncome: 0,
+    openAdder: false,
   };
 
   const [controller, dispatch] = useReducer(reducer, initialState);
@@ -121,7 +146,14 @@ const setOpenConfigurator = (dispatch, value) => dispatch({ type: "OPEN_CONFIGUR
 const setDirection = (dispatch, value) => dispatch({ type: "DIRECTION", value });
 const setLayout = (dispatch, value) => dispatch({ type: "LAYOUT", value });
 const setDarkMode = (dispatch, value) => dispatch({ type: "DARKMODE", value });
-const setWeatherData = (dispatch, value) => dispatch({ type: "WEATHERDATA", value });
+const setAllTranctions = (dispatch, value) => dispatch({ type: "ALLTRANSACTIONS", value });
+const setTransactionName = (dispatch, value) => dispatch({ type: "TRANSACTION_NAME", value });
+const setTotalExpense = (dispatch, value) => dispatch({ type: "TOTALEXPENSE", value });
+const setTotalIncome = (dispatch, value) => dispatch({ type: "TOTALINCOME", value });
+const setSelectedCatName = (dispatch, value) => dispatch({ type: "SELECTEDCATNAME", value });
+const setSelectedCatId = (dispatch, value) => dispatch({ type: "SELECTEDCATID", value });
+const setEditCatPopOpen = (dispatch, value) => dispatch({ type: "EDITCATPOPOPEN", value });
+const setOpenAdder = (dispatch, value) => dispatch({ type: "OPEN_ADDER", value });
 
 export {
   MaterialUIControllerProvider,
@@ -136,5 +168,12 @@ export {
   setDirection,
   setLayout,
   setDarkMode,
-  setWeatherData,
+  setAllTranctions,
+  setTotalExpense,
+  setTotalIncome,
+  setOpenAdder,
+  setTransactionName,
+  setSelectedCatName, 
+  setSelectedCatId,
+  setEditCatPopOpen,
 };

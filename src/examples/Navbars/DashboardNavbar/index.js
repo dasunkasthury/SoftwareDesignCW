@@ -14,6 +14,7 @@ Coded by www.creative-tim.com
 */
 
 import { useState, useEffect } from "react";
+import React from "react";
 
 // react-router components
 import { useLocation, Link } from "react-router-dom";
@@ -27,6 +28,11 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import Icon from "@mui/material/Icon";
+import DateRangePicker from "@mui/lab/DateRangePicker";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import TextField from "@mui/material/TextField";
+import { styled, Box } from "@mui/system";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -35,6 +41,7 @@ import MDInput from "components/MDInput";
 // Material Dashboard 2 React example components
 import Breadcrumbs from "examples/Breadcrumbs";
 import NotificationItem from "examples/Items/NotificationItem";
+import Server from "api/ServerApi";
 
 // Custom styles for DashboardNavbar
 import {
@@ -51,10 +58,17 @@ import {
   setTransparentNavbar,
   setMiniSidenav,
   setOpenConfigurator,
+  setAllTranctions,
+  setTotalIncome,
+  setTotalExpense,
 } from "context";
+
+
 
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
+  const [dateValue, setdateValue] = useState([null, null]);
+
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
@@ -90,6 +104,18 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
+
+  const handleDateChange = async (value) => {
+    setdateValue(value);
+    if(value[0] != null && value[1] != null)
+    {
+      const data = await Server.getTransactionsByDate(value[0], value[1]);
+      console.log("*************** data after date change*************** ", data.response.transactionList);
+      setAllTranctions(dispatch, data.response.transactionList);
+      setTotalIncome(dispatch, data.response.income);
+      setTotalExpense(dispatch, data.response.expense);
+    }
+  };
 
   // Render the notifications menu
   const renderMenu = () => (
@@ -135,9 +161,23 @@ function DashboardNavbar({ absolute, light, isMini }) {
         </MDBox>
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
-            <MDBox pr={1}>
-              <MDInput label="Search here" />
-            </MDBox>
+            <MDBox mt={0} mb={2}>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DateRangePicker
+              startText="From"
+              endText="To"
+              value={dateValue}
+              onChange={handleDateChange}
+              renderInput={(startProps, endProps) => (
+                <React.Fragment>
+                  <TextField {...startProps} />
+                  <Box sx={{ mx: 2 }}> to </Box>
+                  <TextField {...endProps} />
+                </React.Fragment>
+              )}
+            />
+          </LocalizationProvider>
+        </MDBox>
             <MDBox color={light ? "white" : "inherit"}>
               <Link to="/authentication/sign-in/basic">
                 <IconButton sx={navbarIconButton} size="small" disableRipple>
